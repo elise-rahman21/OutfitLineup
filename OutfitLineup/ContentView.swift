@@ -8,170 +8,149 @@
 import SwiftUI
 
 struct ContentView: View {
-    
-    // Stores the categories (ClothesGroup) and the clothing items within them
-    @State var clothesGroups = [
-        ClothesGroup(id: 0, category: "Tops", clothings: []), //tops
-        ClothesGroup(id: 1, category: "Bottoms", clothings: []), //bottoms
-        ClothesGroup(id: 2, category: "Accessories", clothings: []), //accessory
-        ClothesGroup(id: 3, category: "Shoes", clothings: []) //shoes
-    ]
-    
-    @State private var isCameraActive = false // Controls if the camera is active
-    @State private var capturedImage: UIImage? = nil // Stores the captured image
-    @State private var isCategorySelectionActive = false // Controls if the category selection pop-up is active
-    
-    
-    var body: some View {
-        Button(action: {
-            // Action to open the digital closet
-        }) {
-            Image("closet") // <-- your own asset image
-                .resizable()
-                .frame(width: 40, height: 40) // size of the button
-                .aspectRatio(contentMode: .fit)
-        }
-        .padding()
-        NavigationView {
-              VStack {
-                  if capturedImage == nil {
-                      // Show "+" button if no image captured
-                      Button(action: {
-                          isCameraActive = true
-                      }) {
-                          Image(systemName: "plus.circle")
-                              .resizable()
-                              .frame(width: 60, height: 60)
-                              .foregroundColor(.cyan)
-                      }
-                      .padding()
-                  } else {
-                      // After image is captured, show the image + redo/confirm
-                      VStack {
-                          Image(uiImage: capturedImage!)
-                              .resizable()
-                              .scaledToFit()
-                              .frame(width: 300, height: 300)
-                              .padding()
-                          
-                          HStack {
-                              Button(action: {
-                                  // Redo: clear the image, open camera again
-                                  capturedImage = nil
-                                  isCameraActive = true
-                              }) {
-                                  Text("Redo")
-                                      .font(.title2)
-                                      .foregroundColor(.white)
-                                      .padding()
-                                      .background(Color.red)
-                                      .cornerRadius(10)
-                              }
-                              .padding()
-                              
-                              Spacer()
-                              
-                              Button(action: {
-                                  // Confirm: move to category picker
-                                  isCategorySelectionActive = true
-                              }) {
-                                  Text("Confirm")
-                                      .font(.title2)
-                                      .foregroundColor(.white)
-                                      .padding()
-                                      .background(Color.green)
-                                      .cornerRadius(10)
-                              }
-                              .padding()
-                          }
-                          .padding(.horizontal)
-                      }
-                  }
-                  
-                  // Show the saved clothes
-                  List {
-                      ForEach(clothesGroups, id: \.id) { clothesGroup in
-                          Section(header: Text(clothesGroup.category)) {
-                              ForEach(clothesGroup.clothings, id: \.nameNum) { clothes in
-                                  HStack {
-                                      if let photo = clothes.photo {
-                                          Image(uiImage: photo)
-                                              .resizable()
-                                              .scaledToFit()
-                                              .frame(width: 50, height: 50)
-                                      }
-                                      Text(clothes.nameNum)
-                                  }
-                              }
-                          }
-                      }
-                  }
-              }
-              .navigationTitle("Digital Closet")
-          }
-        
-        //Present the camera view when the flag is set to true
-        .sheet(isPresented: $isCameraActive)
-        {
-            CameraView(
-                didCaptureImage: { image in
-                    self.capturedImage = image
-                },
-                isCameraActive: $isCameraActive,
-                capturedImage: $capturedImage
-            )
-        }
-        
-        
-        
-        .actionSheet(isPresented: $isCategorySelectionActive)
-        {
-            ActionSheet(
-                title: Text("Select Category"),
-                message: Text("Please choose a category for the clothing item."),
-                buttons:
-                [
-                    .default(Text("Tops")) { saveImageToCategory("Tops") },
-                    .default(Text("Bottoms")) { saveImageToCategory("Bottoms") },
-                    .default(Text("Accessories")) { saveImageToCategory("Accessories") },
-                    .default(Text("Shoes")) { saveImageToCategory("Shoes") },
-                    .cancel() // Adds a cancel button to close the action sheet
-                ]
-                    
-            )
-        }
-    //end of body
-    }
-        
-        // Function to save the image to the selected category
-        func saveImageToCategory(_ category: String) {
-            // Find the index of the selected category in the clothesGroups array
-            if let groupIndex = clothesGroups.firstIndex(where: { $0.category == category })
-            {
-                var group = clothesGroups[groupIndex] // Get the category group
-                
-                // Generate a new name for the clothing item based on the number of items already in the group
-                let newNameNum = "\(category)\(group.clothings.count + 1)"
-                
-                // Create a new clothing item with the generated name, category, and captured image
-                let newClothing = Clothes(nameNum: newNameNum, labels: category, photo: capturedImage)
+    @State private var selectedTab = 1 // Default to main screen
 
-                
-                // Add the new clothing item to the appropriate category's clothings array
-                group.clothings.append(newClothing)
-                
-                // Update the clothesGroups array with the modified category group
-                clothesGroups[groupIndex] = group
-                
-                // Reset the captured image and hide the category selection alert
-                capturedImage = nil
-                isCategorySelectionActive = false
-                
+    // Shared clothes data
+    @State var clothesGroups = [
+        ClothesGroup(id: 0, category: "Tops", clothings: []),
+        ClothesGroup(id: 1, category: "Bottoms", clothings: []),
+        ClothesGroup(id: 2, category: "Accessories", clothings: []),
+        ClothesGroup(id: 3, category: "Shoes", clothings: [])
+    ]
+
+    @State private var isCameraActive = false
+    @State private var capturedImage: UIImage? = nil
+    @State private var isCategorySelectionActive = false
+
+    var body: some View {
+        NavigationView {
+            ZStack(alignment: .bottom) {
+                // MAIN VIEWS BASED ON TABS
+                Group {
+                    switch selectedTab {
+                    case 0:
+                        TodaysView()
+                    case 1:
+                        mainTrackingView
+                    case 2:
+                        DigiClosetView(clothesGroups: clothesGroups)
+                    default:
+                        Text("Invalid tab")
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.white)
+
+                // BOTTOM TOOLBAR
+                HStack {
+                    Spacer()
+                    Button(action: { selectedTab = 0 }) {
+                        Image(systemName: "figure.dress.line.vertical.figure")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                    }
+                    Spacer()
+                    Button(action: {
+                        isCameraActive = true
+                    }) {
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .frame(width: 60, height: 60)
+                            .foregroundColor(.cyan)
+                            .padding(.bottom, 10)
+                    }
+                    Spacer()
+                    Button(action: { selectedTab = 2 }) {
+                        Image("closet")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .aspectRatio(contentMode: .fit)
+                    }
+                    Spacer()
+                }
+                .padding(.vertical, 10)
+                .background(Color.white.shadow(radius: 5))
+            }
+            .sheet(isPresented: $isCameraActive) {
+                CameraView(
+                    didCaptureImage: { image in
+                        self.capturedImage = image
+                    },
+                    isCameraActive: $isCameraActive,
+                    capturedImage: $capturedImage
+                )
+            }
+            .actionSheet(isPresented: $isCategorySelectionActive) {
+                ActionSheet(
+                    title: Text("Select Category"),
+                    message: Text("Choose a category for the item."),
+                    buttons: [
+                        .default(Text("Tops")) { saveImageToCategory("Tops") },
+                        .default(Text("Bottoms")) { saveImageToCategory("Bottoms") },
+                        .default(Text("Accessories")) { saveImageToCategory("Accessories") },
+                        .default(Text("Shoes")) { saveImageToCategory("Shoes") },
+                        .cancel()
+                    ]
+                )
             }
         }
-        
-//end of view EVERYTHING
+    }
+
+    // TEMP TRACKING VIEW WITH REDO/CONFIRM
+    var mainTrackingView: some View {
+        VStack {
+            if capturedImage == nil {
+                Text("Press the + button to track a clothing item")
+                    .foregroundColor(.gray)
+            } else {
+                VStack {
+                    Image(uiImage: capturedImage!)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 300, height: 300)
+
+                    HStack {
+                        Button(action: {
+                            capturedImage = nil
+                            isCameraActive = true
+                        }) {
+                            Text("Redo")
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.red)
+                                .cornerRadius(10)
+                        }
+                        Spacer()
+                        Button(action: {
+                            isCategorySelectionActive = true
+                        }) {
+                            Text("Confirm")
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(Color.green)
+                                .cornerRadius(10)
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+            }
+        }
+        .padding()
+    }
+
+    func saveImageToCategory(_ category: String) {
+        if let groupIndex = clothesGroups.firstIndex(where: { $0.category == category }) {
+            var group = clothesGroups[groupIndex]
+            let newNameNum = "\(category)\(group.clothings.count + 1)"
+            let newClothing = Clothes(nameNum: newNameNum, labels: category, photo: capturedImage)
+            group.clothings.append(newClothing)
+            clothesGroups[groupIndex] = group
+            capturedImage = nil
+            isCategorySelectionActive = false
+        }
+    }
 }
+
 
 #Preview {
     ContentView()

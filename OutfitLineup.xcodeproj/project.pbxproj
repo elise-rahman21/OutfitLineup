@@ -15,6 +15,7 @@
 		B6309EA02DC1356D00228457 /* ClothesGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6309E9F2DC1356D00228457 /* ClothesGroup.swift */; };
 		B6309EA22DC1358D00228457 /* Clothes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6309EA12DC1358D00228457 /* Clothes.swift */; };
 		B6309EA42DC135A800228457 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6309EA32DC135A800228457 /* CameraView.swift */; };
+		B6309EA62DC13A8400228457 /* DigiClosetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6309EA52DC13A8400228457 /* DigiClosetView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		B6309E9F2DC1356D00228457 /* ClothesGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClothesGroup.swift; sourceTree = "<group>"; };
 		B6309EA12DC1358D00228457 /* Clothes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Clothes.swift; sourceTree = "<group>"; };
 		B6309EA32DC135A800228457 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		B6309EA52DC13A8400228457 /* DigiClosetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigiClosetView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 			children = (
 				B6309E912DC1352600228457 /* OutfitLineupApp.swift */,
 				B6309E932DC1352600228457 /* ContentView.swift */,
+				B6309EA52DC13A8400228457 /* DigiClosetView.swift */,
 				3FDBEFBD2DC13914002135E1 /* TodaysView.swift */,
 				B6309E9F2DC1356D00228457 /* ClothesGroup.swift */,
 				B6309EA12DC1358D00228457 /* Clothes.swift */,
@@ -152,6 +155,7 @@
 				3FDBEFBE2DC13914002135E1 /* TodaysView.swift in Sources */,
 				B6309EA02DC1356D00228457 /* ClothesGroup.swift in Sources */,
 				B6309E942DC1352600228457 /* ContentView.swift in Sources */,
+				B6309EA62DC13A8400228457 /* DigiClosetView.swift in Sources */,
 				B6309EA22DC1358D00228457 /* Clothes.swift in Sources */,
 				B6309EA42DC135A800228457 /* CameraView.swift in Sources */,
 				B6309E922DC1352600228457 /* OutfitLineupApp.swift in Sources */,
