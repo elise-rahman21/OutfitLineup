@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3FDBEFBE2DC13914002135E1 /* TodaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDBEFBD2DC13914002135E1 /* TodaysView.swift */; };
 		B6309E922DC1352600228457 /* OutfitLineupApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6309E912DC1352600228457 /* OutfitLineupApp.swift */; };
 		B6309E942DC1352600228457 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6309E932DC1352600228457 /* ContentView.swift */; };
 		B6309E962DC1352800228457 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B6309E952DC1352800228457 /* Assets.xcassets */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3FDBEFBD2DC13914002135E1 /* TodaysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysView.swift; sourceTree = "<group>"; };
 		B6309E8E2DC1352600228457 /* OutfitLineup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OutfitLineup.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6309E912DC1352600228457 /* OutfitLineupApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutfitLineupApp.swift; sourceTree = "<group>"; };
 		B6309E932DC1352600228457 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 			children = (
 				B6309E912DC1352600228457 /* OutfitLineupApp.swift */,
 				B6309E932DC1352600228457 /* ContentView.swift */,
+				3FDBEFBD2DC13914002135E1 /* TodaysView.swift */,
 				B6309E9F2DC1356D00228457 /* ClothesGroup.swift */,
 				B6309EA12DC1358D00228457 /* Clothes.swift */,
 				B6309EA32DC135A800228457 /* CameraView.swift */,
@@ -146,6 +149,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3FDBEFBE2DC13914002135E1 /* TodaysView.swift in Sources */,
 				B6309EA02DC1356D00228457 /* ClothesGroup.swift in Sources */,
 				B6309E942DC1352600228457 /* ContentView.swift in Sources */,
 				B6309EA22DC1358D00228457 /* Clothes.swift in Sources */,
