@@ -34,8 +34,10 @@ struct TodaysView: View {
                 Button(action: {
                     showDatePicker.toggle()
                 }) {
-                    Text("📅")
-                        .font(.title2)
+                    Text("🗓️")
+                        .font(.system(size: 35))
+
+                        
                 }
                 .popover(isPresented: $showDatePicker) {
                     VStack {
