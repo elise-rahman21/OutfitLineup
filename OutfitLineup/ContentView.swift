@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab = 1 // Default to main screen
+    @State private var selectedTab = 0 // CHANGED: Default to TodaysView
 
     // Shared clothes data
     @State var clothesGroups = [
@@ -29,7 +29,7 @@ struct ContentView: View {
                 Group {
                     switch selectedTab {
                     case 0:
-                        TodaysView()
+                        TodaysView() // CHANGED: This is now the first/default screen
                     case 1:
                         mainTrackingView
                     case 2:
@@ -44,12 +44,20 @@ struct ContentView: View {
                 // BOTTOM TOOLBAR
                 HStack {
                     Spacer()
-                    Button(action: { selectedTab = 0 }) {
-                        Image(systemName: "figure.dress.line.vertical.figure")
+
+                    // Left: Todays View
+                    Button(action: {
+                        selectedTab = 0
+                    }) {
+                        Image(systemName: "clock")
                             .resizable()
                             .frame(width: 30, height: 30)
+                            .foregroundColor(.brown)
                     }
+
                     Spacer()
+
+                    // Middle: Camera
                     Button(action: {
                         isCameraActive = true
                     }) {
@@ -59,18 +67,26 @@ struct ContentView: View {
                             .foregroundColor(.cyan)
                             .padding(.bottom, 10)
                     }
+
                     Spacer()
-                    Button(action: { selectedTab = 2 }) {
-                        Image("closet")
+
+                    // Right: Closet View
+                    Button(action: {
+                        selectedTab = 2
+                    }) {
+                        Image("closet") // your asset
                             .resizable()
-                            .frame(width: 30, height: 30)
+                            .frame(width: 35, height: 35)
                             .aspectRatio(contentMode: .fit)
                     }
+
                     Spacer()
                 }
                 .padding(.vertical, 10)
                 .background(Color.white.shadow(radius: 5))
             }
+
+            // Show camera sheet
             .sheet(isPresented: $isCameraActive) {
                 CameraView(
                     didCaptureImage: { image in
@@ -80,6 +96,8 @@ struct ContentView: View {
                     capturedImage: $capturedImage
                 )
             }
+
+            // Category action sheet
             .actionSheet(isPresented: $isCategorySelectionActive) {
                 ActionSheet(
                     title: Text("Select Category"),
@@ -120,7 +138,9 @@ struct ContentView: View {
                                 .background(Color.red)
                                 .cornerRadius(10)
                         }
+
                         Spacer()
+
                         Button(action: {
                             isCategorySelectionActive = true
                         }) {
@@ -150,7 +170,6 @@ struct ContentView: View {
         }
     }
 }
-
 
 #Preview {
     ContentView()
