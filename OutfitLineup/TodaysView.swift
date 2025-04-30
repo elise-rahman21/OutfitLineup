@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+struct clothingItem{
+    
+}
+
 struct TimeSlot: Identifiable {
     let id = UUID()
     let time: String
@@ -52,24 +56,17 @@ struct TodaysView: View {
             }
             .padding(.bottom, 10)
 
-            // Time Slots list
-            ScrollView {
-                VStack(alignment: .leading) {
-                    ForEach(generateTimeSlots(for: selectedDate)) { slot in
-                        HStack {
-                            Text(slot.time)
-                                .frame(width: 80, alignment: .leading)
-                                .font(.caption)
-                                .foregroundColor(.gray)
-                            Divider()
-                            Spacer()
-                        }
-                        .padding(.vertical, 4)
-                    }
-                }
-            }
+          
         }
         .padding()
+        
+        Button{
+            
+        }label:{
+            Image(systemName:"plus.app")
+                .resizable()
+                .frame(width: 40, height: 40)
+        }
     }
 
     // Format the selected date
