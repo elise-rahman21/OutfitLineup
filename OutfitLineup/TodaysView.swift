@@ -7,8 +7,14 @@
 
 import SwiftUI
 
-struct clothingItem{
-    
+struct ClothingItem: Identifiable {
+    let id = UUID()
+    var imageName: String
+}
+
+struct OutfitSlot: Identifiable {
+    let id = UUID()
+    var selectedItem: ClothingItem?
 }
 
 struct TimeSlot: Identifiable {
@@ -19,6 +25,7 @@ struct TimeSlot: Identifiable {
 struct TodaysView: View {
     @State private var selectedDate = Date()
     @State private var showDatePicker = false
+    @State private var outfitSlots: [OutfitSlot] = [OutfitSlot()]
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -28,7 +35,7 @@ struct TodaysView: View {
                     Text("OOTD")
                         .font(.system(size: 40, weight: .medium))
                         .frame(maxWidth: .infinity, alignment: .center)
-
+                    
                     Text(formattedDate(date: selectedDate))
                         .font(.headline)
                         .foregroundColor(.gray)
@@ -40,8 +47,6 @@ struct TodaysView: View {
                 }) {
                     Text("🗓️")
                         .font(.system(size: 35))
-
-                        
                 }
                 .popover(isPresented: $showDatePicker) {
                     VStack {
@@ -55,18 +60,43 @@ struct TodaysView: View {
                 .padding(.trailing)
             }
             .padding(.bottom, 10)
+            
+            // Outfit slots
+            ForEach($outfitSlots) { $slot in
+                HStack {
+                    if let item = slot.selectedItem {
+                        Image(systemName: item.imageName)
+                            .resizable()
+                            .frame(width: 50, height: 50)
+                    } else {
+                        Button(action: {
+                            // Placeholder: Pick clothing item
+                            slot.selectedItem = ClothingItem(imageName: "tshirt.fill")
+                        }) {
+                            Image(systemName: "plus.circle")
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                        }
+                    }
+                }
+                .padding(.vertical, 4)
+            }
 
-          
+            // Add clothing slot button
+            Button(action: {
+                outfitSlots.append(OutfitSlot())
+            }) {
+                HStack {
+                    Image(systemName: "plus.app")
+                }
+                .padding()
+                .background(Color.blue.opacity(0.2))
+                .cornerRadius(10)
+            }
+
+            Spacer()
         }
         .padding()
-        
-        Button{
-            
-        }label:{
-            Image(systemName:"plus.app")
-                .resizable()
-                .frame(width: 40, height: 40)
-        }
     }
 
     // Format the selected date
@@ -77,12 +107,12 @@ struct TodaysView: View {
     }
 }
 
-// Generate time slots for the selected date
+// Optional: If you want to reuse time slots later
 func generateTimeSlots(for date: Date) -> [TimeSlot] {
     var slots: [TimeSlot] = []
     let formatter = DateFormatter()
     formatter.dateFormat = "h:mm a"
-    
+
     var currentTime = Calendar.current.startOfDay(for: date)
     for _ in 0..<48 {
         slots.append(TimeSlot(time: formatter.string(from: currentTime)))
@@ -94,4 +124,3 @@ func generateTimeSlots(for date: Date) -> [TimeSlot] {
 #Preview {
     TodaysView()
 }
-
