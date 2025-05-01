@@ -9,8 +9,8 @@ import SwiftUI
 
 struct DigiClosetView: View {
     var clothesGroups: [ClothesGroup]
+    @State var selectedCategory: String
 
-    @State private var selectedCategory: String = "All"
 
     var filteredClothes: [Clothes] {
         if selectedCategory == "All" {
