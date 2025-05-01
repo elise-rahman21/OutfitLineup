@@ -29,7 +29,9 @@ struct ContentView: View {
                 Group {
                     switch selectedTab {
                     case 0:
-                        TodaysView() // CHANGED: This is now the first/default screen
+                        TodaysView()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .background(Color.white)                    
                     case 1:
                         mainTrackingView
                     case 2:
