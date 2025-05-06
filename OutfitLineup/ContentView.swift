@@ -31,11 +31,14 @@ struct ContentView: View {
                     case 0:
                         TodaysView()
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .background(Color.white)                    
+                            .background(Color.white)
+                        
                     case 1:
                         mainTrackingView
+                        
                     case 2:
-                        DigiClosetView(clothesGroups: clothesGroups)
+                        DigiClosetView(clothesGroups: clothesGroups, selectedCategory: "All") // FIXED
+                        
                     default:
                         Text("Invalid tab")
                     }
