@@ -20,12 +20,14 @@ struct OutfitSlot: Identifiable {
 struct TodaysView: View {
     @State private var selectedDate = Date()
     @State private var showDatePicker = false
+
+    @State private var outfitDataByDate: [String: [OutfitSlot]] = [:] // key = formatted date string
     @State private var outfitSlots: [OutfitSlot] = [OutfitSlot()]
+
     let categories = ["Tops", "Bottoms", "Shoes", "Accessories"]
     @State private var navigateToCloset = false
     @State private var selectedClosetCategory = ""
 
-    // Example clothes groups (Replace with real data)
     let yourClothesGroupsArray: [ClothesGroup] = [
         ClothesGroup(id: 1, category: "Tops", clothings: []),
         ClothesGroup(id: 2, category: "Bottoms", clothings: []),
@@ -35,89 +37,129 @@ struct TodaysView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                ZStack(alignment: .topTrailing) {
-                    VStack(spacing: 4) {
-                        Text("OOTD")
-                            .font(.system(size: 40, weight: .medium))
-                            .frame(maxWidth: .infinity, alignment: .center)
-                        
-                        Text(formattedDate(date: selectedDate))
-                            .font(.headline)
-                            .foregroundColor(.gray)
-                    }
+            ZStack {
+                //  Background image
+                Image("background")
+                    .resizable()
+                    .scaledToFill()
+                    .opacity(0.2)
+                    .ignoresSafeArea()
 
-                    Button(action: {
-                        showDatePicker.toggle()
-                    }) {
-                        Text("🗓️")
-                            .font(.system(size: 35))
-                    }
-                    .popover(isPresented: $showDatePicker) {
-                        VStack {
-                            DatePicker("Select a date", selection: $selectedDate, displayedComponents: .date)
-                                .datePickerStyle(.graphical)
-                                .padding()
+                VStack(alignment: .leading) {
+                    ZStack(alignment: .topTrailing) {
+                        VStack(spacing: 4) {
+                            Text("OOTD")
+                                .font(.system(size: 40, weight: .medium))
+                                .frame(maxWidth: .infinity, alignment: .center)
+
+                            Text(formattedDate(date: selectedDate))
+                                .font(.headline)
+                                .foregroundColor(.gray)
                         }
-                        .frame(width: 300)
-                    }
-                    .padding(.top, 4)
-                    .padding(.trailing)
-                }
-                .padding(.bottom, 10)
 
-                // Outfit slots with a dropdown menu for categories
-                ForEach($outfitSlots) { $slot in
-                    Menu {
+                        Button(action: {
+                            showDatePicker.toggle()
+                        }) {
+                            Text("🗓️")
+                                .font(.system(size: 35))
+                        }
+                        .popover(isPresented: $showDatePicker) {
+                            VStack {
+                                DatePicker("Select a date", selection: $selectedDate, displayedComponents: .date)
+                                    .datePickerStyle(.graphical)
+                                    .onChange(of: selectedDate) { _ in
+                                        loadOutfitForDate()
+                                    }
+                                    .padding()
+                            }
+                            .frame(width: 300)
+                        }
+                        .padding(.top, 4)
+                        .padding(.trailing)
+                    }
+                    .padding(.bottom, 10)
+
+                    ForEach($outfitSlots) { $slot in
+                    // ⬇️ Wrap the button in HStack and center it horizontally
+                    HStack {
+                      Menu {
                         ForEach(categories, id: \.self) { category in
                             Button(category) {
-                                slot.selectedCategory = category
-                                selectedClosetCategory = category  // Update selected category
-                                navigateToCloset = true  // Trigger navigation
+                            slot.selectedCategory = category
+                            selectedClosetCategory = category
+                            navigateToCloset = true
                             }
-                        }
-                    } label: {
+                            }
+                        } label: {
                         HStack {
-                            Text(slot.selectedCategory)
-                            Image(systemName: "chevron.down")
+                        Text(slot.selectedCategory)
+                        Image(systemName: "chevron.down")
                         }
                         .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(Color.blue)
+                        .frame(width: 250) // Button width
+                        .background(Color.gray) // ⬅️ Changed from blue to gray
                         .foregroundColor(.white)
                         .cornerRadius(8)
-                    }
-                    .padding(.bottom, 4)
-                }
+                        }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center) // ⬅️ Center horizontally
+                        .padding(.bottom, 4)
+                        }
 
-                // Add new outfit slot button
-                Button(action: {
-                    outfitSlots.append(OutfitSlot())
-                }) {
-                    HStack {
-                        Image(systemName: "plus.app")
-                        Text("Add Clothing Slot")
-                    }
-                    .padding()
-                    .background(Color.green.opacity(0.2))
-                    .cornerRadius(10)
-                }
+                       // ⬇️ Wrap Add Clothing Slot button in HStack and center it
+                       HStack {
+                       Button(action: {
+                         outfitSlots.append(OutfitSlot())
+                         saveOutfitForDate()
+                       }) {
+                       HStack {
+                         Image(systemName: "plus.app")
+                         Text("Add Clothing Slot")
+                       }
+                       .padding()
+                       .background(Color(red: 1.5, green: 0.8, blue: 0.9))
+                       .foregroundColor(.white)
+                       .cornerRadius(10)
+                       }
+                       }
+                       .frame(maxWidth: .infinity, alignment: .center) // ⬅️ Center horizontally
 
-                Spacer()
+                       Spacer()
+                       }
+                        .padding()
             }
-            .padding()
+            .onChange(of: outfitSlots.map { $0.selectedCategory }) { _ in
+                saveOutfitForDate()
+            }
+            .onAppear {
+                loadOutfitForDate()
+            }
 
-            // NavigationLink to DigiClosetView
-            NavigationLink(destination: DigiClosetView(clothesGroups: yourClothesGroupsArray, selectedCategory: selectedClosetCategory), isActive: $navigateToCloset) {
-                EmptyView()  // NavigationLink doesn't show anything here, just triggering navigation
+            NavigationLink(
+                destination: DigiClosetView(
+                    clothesGroups: yourClothesGroupsArray,
+                    selectedCategory: selectedClosetCategory
+                ),
+                isActive: $navigateToCloset
+            ) {
+                EmptyView()
             }
         }
     }
 
-    // Function to format the selected date
     func formattedDate(date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d"
+        formatter.dateFormat = "MMMM d, yyyy"
         return formatter.string(from: date)
+    }
+
+    func loadOutfitForDate() {
+        let key = formattedDate(date: selectedDate)
+        outfitSlots = outfitDataByDate[key] ?? [OutfitSlot()]
+    }
+
+    func saveOutfitForDate() {
+        let key = formattedDate(date: selectedDate)
+        outfitDataByDate[key] = outfitSlots
     }
 }
