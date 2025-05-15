@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+struct MyApp: App {
+    var body: some Scene {
+        WindowGroup {
+            LogInView()
+        }
+    }
+}
+
 struct ContentView: View {
     @State private var selectedTab = 0 // CHANGED: Default to TodaysView
 
@@ -22,6 +30,7 @@ struct ContentView: View {
     @State private var capturedImage: UIImage? = nil
     @State private var isCategorySelectionActive = false
 
+    
     var body: some View {
         NavigationView {
             ZStack(alignment: .bottom) {
