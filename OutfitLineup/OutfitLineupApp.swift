@@ -11,7 +11,7 @@ import SwiftUI
 struct OutfitLineupApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LogInView()
         }
     }
 }

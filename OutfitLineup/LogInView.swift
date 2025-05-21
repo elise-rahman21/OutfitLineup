@@ -43,9 +43,10 @@ struct LogInView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 20) {
-                Text("Login")
-                    .font(.largeTitle)
+                Text("Welcome!")
+                    .font(.custom("GillSans-SemiBold", size: 40))
                     .bold()
+                //ChalkboardSE-Regular
 
                 TextField("Username", text: $username)
                     .padding(10)
@@ -57,18 +58,23 @@ struct LogInView: View {
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(10)
 
+                
                 Button("Log in") {
                     login()
                 }
+                .font(.custom("Apple SD Gothic Neo", size: 19))
+
 
                 if showError {
                     Text("Invalid login")
                         .foregroundColor(.red)
                 }
 
-                Button("Register") {
+                Button("Sign up") {
                     register()
                 }
+                .font(.custom("Apple SD Gothic Neo", size: 19))
+
 
                 // Hidden navigation link that activates when loginSuccess is true
                 NavigationLink(destination: ContentView(), isActive: $loginSuccess) {
@@ -102,6 +108,11 @@ struct LogInView: View {
         showError = !loginSuccess
     }
 }
+
+#Preview {
+    LogInView()
+}
+
 
 #Preview {
     LogInView()
